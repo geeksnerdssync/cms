@@ -199,13 +199,13 @@ const Material = () => {
     }
   };
 
-  const handleEdit = (material) => {
+const handleEdit = (material) => {
     setEditingMaterial(material);
     setFormData({
       title: material.title,
-      subject: material.subject._id,
+      subject: material.subject ? material.subject._id : "",
       semester: material.semester,
-      branch: material.branch._id,
+      branch: material.branch ? material.branch._id : "",
       type: material.type,
     });
     setShowModal(true);
@@ -353,9 +353,9 @@ const Material = () => {
                     </CustomButton>
                   </td>
                   <td className="py-4 px-6">{material.title}</td>
-                  <td className="py-4 px-6">{material.subject.name}</td>
+                  <td className="py-4 px-6">{material.subject ? material.subject.name : "N/A"}</td>
                   <td className="py-4 px-6">{material.semester}</td>
-                  <td className="py-4 px-6">{material.branch.name}</td>
+                  <td className="py-4 px-6">{material.branch ? material.branch.name : "N/A"}</td>
                   <td className="py-4 px-6 capitalize">{material.type}</td>
                   <td className="py-4 px-6">
                     <div className="flex gap-4">

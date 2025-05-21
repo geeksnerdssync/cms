@@ -49,7 +49,7 @@ const generateEmployeeId = () => {
 
 const registerFacultyController = async (req, res) => {
   try {
-    const { email, phone } = req.body;
+    const { email, phone, bloodGroup } = req.body;
     const profile = req.file.filename;
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -58,6 +58,16 @@ const registerFacultyController = async (req, res) => {
 
     if (!/^\d{10}$/.test(phone)) {
       return ApiResponse.badRequest("Phone number must be 10 digits").send(res);
+    }
+
+    // Normalize bloodGroup to uppercase if provided
+    let normalizedBloodGroup = bloodGroup;
+    if (bloodGroup) {
+      normalizedBloodGroup = bloodGroup.toUpperCase();
+      const validBloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+      if (!validBloodGroups.includes(normalizedBloodGroup)) {
+        return ApiResponse.badRequest("Invalid blood group").send(res);
+      }
     }
 
     const existing = await facultyDetails.findOne({
@@ -73,6 +83,7 @@ const registerFacultyController = async (req, res) => {
 
     const user = await facultyDetails.create({
       ...req.body,
+      bloodGroup: normalizedBloodGroup,
       employeeId,
       profile,
       password: "faculty123",
@@ -98,7 +109,7 @@ const updateFacultyController = async (req, res) => {
     }
 
     const updateData = { ...req.body };
-    const { email, phone, password } = updateData;
+    const { email, phone, password, bloodGroup } = updateData;
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return ApiResponse.badRequest("Invalid email format").send(res);
@@ -112,6 +123,16 @@ const updateFacultyController = async (req, res) => {
       return ApiResponse.badRequest(
         "Password must be at least 8 characters"
       ).send(res);
+    }
+
+    // Normalize bloodGroup to uppercase if provided
+    if (bloodGroup) {
+      const normalizedBloodGroup = bloodGroup.toUpperCase();
+      const validBloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+      if (!validBloodGroups.includes(normalizedBloodGroup)) {
+        return ApiResponse.badRequest("Invalid blood group").send(res);
+      }
+      updateData.bloodGroup = normalizedBloodGroup;
     }
 
     if (email) {

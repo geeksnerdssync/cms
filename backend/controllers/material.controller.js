@@ -139,11 +139,13 @@ const deleteMaterialController = async (req, res) => {
       return ApiResponse.notFound("Material not found").send(res);
     }
 
-    // Check if the faculty is the owner of the material
-    if (material.faculty.toString() !== req.userId) {
-      return ApiResponse.unauthorized(
-        "You are not authorized to delete this material"
-      ).send(res);
+    // Allow deletion if faculty info is missing (orphaned material)
+    if (material.faculty) {
+      if (material.faculty.toString() !== req.userId) {
+        return ApiResponse.unauthorized(
+          "You are not authorized to delete this material"
+        ).send(res);
+      }
     }
 
     await Material.findByIdAndDelete(id);

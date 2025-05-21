@@ -289,7 +289,7 @@ const Timetable = () => {
                     <MdLink />
                   </a>
                 </td>
-                <td className="py-4 px-6">{item.branch.name}</td>
+                <td className="py-4 px-6">{item.branch ? item.branch.name : "N/A"}</td>
                 <td className="py-4 px-6">{item.semester}</td>
                 <td className="py-4 px-6">
                   {new Date(item.createdAt).toLocaleDateString()}
