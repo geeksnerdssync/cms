@@ -1,0 +1,35 @@
+graph TD
+  subgraph Backend
+    ES[Express Server]
+    DB[(MongoDB)]
+    Models[Models]
+    Controllers[Controllers]
+    Routes[Routes]
+    Middleware[Middleware]
+    Media[Static Media Serving]
+
+    ES --> Middleware
+    ES --> Routes
+    Routes --> Controllers
+    Controllers --> Models
+    Models --> DB
+    ES --> Media
+  end
+
+  subgraph Frontend
+    ReactApp[React App]
+    Screens[Screens]
+    Components[UI Components]
+    Redux[Redux Store]
+    API[API Calls to Backend]
+
+    ReactApp --> Screens
+    ReactApp --> Components
+    ReactApp --> Redux
+    Screens --> API
+    Components --> API
+    API -->|HTTP Requests| Routes
+  end
+
+  Backend -.->|Serves API| Frontend
+  Frontend -.->|Calls API| Backend
